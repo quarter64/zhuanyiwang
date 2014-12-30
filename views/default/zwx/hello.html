@@ -1,0 +1,6 @@
+
+{set:$page=IReq::get('page')==null?1:IReq::get('page');} 
+{query:name=right page=$page pagesize=5} 
+{$key}:{$item['name']}<br/> 
+{/query} 
+{$query->getPageBar()}

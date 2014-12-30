@@ -1,0 +1,536 @@
+{js:kindeditor}
+{js:my97date}
+{set:$swfloadObject = new Zwx_fore_swfupload();$swfloadObject->show();}
+{js:artTemplate}
+
+<script type="text/javascript" src="{theme:javascript/event.js}"></script>
+<script type="text/javascript" src="{theme:javascript/SelectDrop.js}"></script>
+<script type='text/javascript' src='{theme:javascript/artTemplate/area_select.js}'></script>
+
+<style type="text/css">
+.content{margin:0 10px 0 15px;_margin-right:17px;overflow-x:hidden;overflow-y:auto}
+.form_table{float:left;width:100%;margin-top:10px;table-layout:fixed;}
+	.form_table th{padding:5px 8px 5px 0;border-bottom:1px solid #fff;color:#333333;font-weight:bold;text-align:right;white-space:nowrap;background-color:#f9f9f9;}
+	.form_table th.title{padding-left:10px;text-align:left}
+	.form_table td{padding:6px 0 5px 10px;text-align:left;color:#717171;line-height:200%}
+	.form_table label{margin-left:10px;padding:7px 0 0}
+	.form_table label.attr{color:#1d1d1d}
+		.form_table label input{margin-right:5px;vertical-align:middle}
+	.form_table textarea{width:465px;height:65px;padding:0 0 0 5px;font-size:12px;color:#333;border:1px #d2d2d2 solid;line-height:24px}
+	.form_table textarea.big{width:465px;height:350px;}
+	.form_table .pic{float:left;/*width:65px;height:90px;*/margin-right:10px;text-align:center}
+		.form_table .pic img{border:3px #efefed solid; cursor:pointer}
+		.form_table .pic img.current{border:3px #f60 solid}
+	.form_table	img.photo{max-width:750px;height:auto;width:expression(this.width > 750 ? "750px" : this.width);}
+	.upload_btn{display:inline;padding:4px 0 3px 5px;*padding:0 0 0 5px;border: 1px solid #e1e1e1;background: url(../images/admin/admin_bg.gif) repeat-x scroll 0 -228px transparent;color: #707070;cursor: pointer;overflow: hidden;}
+	.swfupload{vertical-align:top;}
+	.ke-container td{padding:0}
+ul.select{list-style:none;float:left;height:84px;overflow: scroll ;overflow-x:hidden;border:#CDCDCD solid 1px; float:left;min-width:180px;}
+	ul.select li{list-style:none;overflow:hidden;height:22px; float:left; clear:both;line-height:22px;border-bottom:#F1F1F1  dotted 1px;padding-right:6px;width:100%}
+	ul.select li.even{background:#FD9;}
+
+
+
+/*下拉框*/
+.selectdrop ul,.selectdrop li{list-style:none;float:left;width:110px;}
+
+.thRelative{position:relative;left:0;top:0;}
+.thLeft{float:left;}
+.thRight{float:right;}
+
+.ico{background: url(views/default/skin/default/images/front/SelectDropIco.png) no-repeat;}
+
+.boxSearch .btn_search,.boxSearch .btn_search_current{border:1px solid #dbdbdb;background-position:6px -186px;width: 10px;height: 5px;margin-top: 4px;padding: 9px 6px;_padding: 9px 6px 0;}
+.key_word{position: absolute;left:0px;top:5px;line-height:22px;color:#777;}
+
+.search_form_suggest{border:1px solid #FBD8A1;position:absolute;top:32px;left:0;z-index:978;width:368px;padding:5px 15px;background:#fff;}
+.search_form_suggest h3{font-size:12px;font-weight:normal;height:20px;line-height:20px;padding:0 0 5px 10px;color:#ff6f00;border-bottom:1px solid #e6e6e6;margin-bottom:4px;}
+.search_hotList dd{line-height:25px;padding-bottom:2px;}
+.search_hotList dd a{color: #777;margin-right:12px;word-break:break-all;white-space:nowrap;display:inline-block;}
+
+.btn_close{cursor:pointer;background-position:0 -1px;width:16px;height:16px;text-indent:-9999px;overflow:hidden;_text-indent:0;_font-size:0;_line-height:0;}
+.btn_close:hover{background-position:0 -27px;}
+</style>
+
+<script>
+/*下拉框*/
+  $(function(){
+    $('#hhDrop00').hhDrop({});
+    $('#hhDrop01').hhDrop({});    
+  })
+</script>
+
+
+<div class="content_box">
+	<div class="content form_content">
+		<form action="{url:/create/goods_update}" name="goodsForm" method="post">
+			<input type="hidden" name="id" value="" />
+			<input type='hidden' name="img" value="" />
+			<input type='hidden' name="_imgList" value="" />
+			<input type='hidden' name="callback" value="{echo:IUrl::getRefRoute()}" />
+
+			<div id="table_box_1">
+				<table class="form_table">
+					<col width="150px" />
+					<col />
+					<tr>
+						<th>商品名称：</th>
+						<td>
+							<input class="normal" name="name" type="text" value="" pattern="required" alt="商品名称不能为空" /><label>*</label>
+						</td>
+					</tr>
+					<tr>
+						<th>联系电话：</th>
+						<td>
+							<input class="normal" name="contact" type="text" value="" pattern="required"/><label>*</label>
+						</td>
+					</tr>
+
+				<tr>
+					<th>你的称呼：</th>
+					<td>
+					<ul class="selectdrop">
+								<li class="selectdropinput" style="width:60px;">
+									<input class="normal" name="surname" type="text" value="" pattern="required" style="width:40px;"/>
+								</li>
+								<li class="thRelative" id="hhDrop00">
+        							<div class="boxSearch">
+          								<span class="key_word" >
+            								<b class="size_14" id="selectdropsextext">
+            								{query:name=goods where = id eq $form[id]}
+												{$item['appellation']}
+											{/query}
+            								</b>
+            								选择称呼
+          								</span>
+           								<a class="thRight ico btn_search" href="javascript:void(0)"></a>
+        							</div>
+        						<div class="search_form_suggest" style="display:none;">
+								<h3><a class="ico btn_close thRight" item="close">关闭</a>选择称呼</h3>
+          						<dl class="search_hotList">
+            					<dd class="clr_after">
+					              <a href="#">北京</a>
+					              <a href="#">上海</a>
+					              <a href="#">广州</a>
+					              <a href="#">成都</a>
+					              <a href="#">杭州</a>
+					              <a href="#">南京</a>
+					              <a href="#">深圳</a>
+					              <a href="#">济南</a>
+					              <a href="#">石家庄</a>
+					              <a href="#">武汉</a>
+					              <a href="#">郑州</a>
+					              <a href="#">重庆</a>
+					              <a href="#">福州</a>
+					              <a href="#">西安</a>
+					              <a href="#">长沙</a>
+					              <a href="#">沈阳</a>
+					              <a href="#">天津</a>
+					              <a href="#">哈尔滨</a>
+					              <a href="#">苏州</a>
+					              <a href="#">南宁</a>
+            					</dd>
+          					</dl>
+        				</div>
+      				</li>
+					</ul>
+					<input type="hidden" name="appellation" id="selectdropsex">
+				</td>
+			</tr>
+
+					<tr>
+						<th>所在地：</th>
+						<td>
+							{query:name=areas where = area_id eq $form[circlet]}
+								{$item['area_name']}
+							{/query}
+							</br>
+							<select name="province" child="city,area,circlet" onchange="areaChangeCallback(this);"></select>
+			
+							<select name="city" child="area,circlet" parent="province" onchange="areaChangeCallback(this);"></select>
+							<select name="area" child="cir" parent="city" pattern='required' onchange="areaChangeCallback(this);"></select>
+							 
+							<select name="cir" id="area"></select>
+							<!--circlet取值-->
+							<input type="hidden" name="circlet" id="circlet_area">
+						</td>
+					</tr>
+					<tr>
+						<th>所属分类：</th>
+						<td>
+							{if:isset($this->category) && $this->category}
+							<ul class="select">
+								{foreach:items=$this->category}
+								<li><label><input type="checkbox" value="{$item['id']}" name="_goods_category[]" />{$item['name']}</label></li>
+								{/foreach}
+							</ul>
+							{else:}
+							系统暂无商品分类，<a href='{url:/goods/category_edit}' class='orange'>请点击添加</a>
+							{/if}
+						</td>
+					</tr>
+
+						<th>基本数据：</th>
+						<td>
+
+							<div class="con">
+								<table class="border_table">
+									<thead id="goodsBaseHead"></thead>
+
+									<!--商品标题模板-->
+									<script id="goodsHeadTemplate" type='text/html'>
+									
+										<th>商品货号</th>
+										<%var isProduct = false;%>
+										<%for(var item in templateData){%>
+										<%isProduct = true;%>
+										<th><%=templateData[item]['name']%></th>
+										<%}%>
+										<th>库存</th>
+										<th>价格</th>
+
+										<!--
+										<%if(isProduct == true){%>
+										-->
+
+
+										<%}%>
+									
+									</script>
+
+									<tbody id="goodsBaseBody"></tbody>
+
+									<!--商品内容模板-->
+									<script id="goodsRowTemplate" type="text/html">
+									<% var i=0;
+									for(var item in templateData)
+									{
+										item = templateData[item]%>
+									<tr class='td_c'>
+										<td>
+											<input readonly="readonly" class="small"  name="_goods_no[<%=i%>]"  pattern="required" type="text" value="<%=item['goods_no'] ? item['goods_no'] : item['products_no']%>" />
+										</td>
+										<%var isProduct = false;
+										var specArrayList = parseJSON(item['spec_array'])
+										for(var result in specArrayList)
+										{
+											result = specArrayList[result]%>
+											<input type='hidden' name="_spec_array[<%=i%>][]" value='{"id":"<%=result.id%>","type":"<%=result.type%>","value":"<%=result.value%>","name":"<%=result.name%>"}' />
+											<%isProduct = true;%>
+										<td>
+											<%if(result['type'] == 1){%>
+												<%=result['value']%>
+											<%}else{%>
+												<img class="img_border" width="30px" height="30px" src="{webroot:<%=result['value']%>}">
+											<%}%>
+										</td>
+										<%}%>
+										<td>
+											<input class="tiny" name="_store_nums[<%=i%>]" type="text" pattern="int" value="1" />
+										</td>
+										<td>
+											
+											<input class="tiny" name="_sell_price[<%=i%>]" type="text" pattern="float" value="<%=item['sell_price']%>" />
+										
+											<input type='hidden' name="_groupPrice[<%=i%>]" value="<%=item['groupPrice']%>" />
+										</td>
+									</tr>
+									<%i++;%>
+									<%}%>
+									</script>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr id="properties" style="display:none">
+						<th>扩展属性：</th>
+						<td>
+							<table class="border_table1" id="propert_table">
+							<script type='text/html' id='propertiesTemplate'>
+							<%for(var item in templateData){%>
+							<%item = templateData[item]%>
+							<%var valueItems = item['value'].split(',');%>
+							<tr>
+								<th><%=item["name"]%></th>
+								<td>
+									<%if(item['type'] == 1){%>
+										<%for(var tempVal in valueItems){%>
+										<%tempVal = valueItems[tempVal]%>
+											<label class="attr"><input type="radio" name="attr_id_<%=item['id']%>" value="<%=tempVal%>" /><%=tempVal%></label>
+										<%}%>
+									<%}else if(item['type'] == 2){%>
+										<%for(var tempVal in valueItems){%>
+										<%tempVal = valueItems[tempVal]%>
+											<label class="attr"><input type="checkbox" name="attr_id_<%=item['id']%>[]" value="<%=tempVal%>"/><%=tempVal%></label>
+										<%}%>
+									<%}else if(item['type'] == 3){%>
+										<select class="auto" name="attr_id_<%=item['id']%>">
+										<%for(var tempVal in valueItems){%>
+										<%tempVal = valueItems[tempVal]%>
+										<option value="<%=tempVal%>"><%=tempVal%></option>
+										<%}%>
+										</select>
+									<%}%>
+								</td>
+							</tr>
+							<%}%>
+							</script>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>产品相册：</th>
+						<td>
+							<input class="middle" type="text" disabled />
+							<div class="upload_btn">
+								<span id="uploadButton"></span>
+							</div>
+							<label>可以上传多张图片，分辨率3000px以下，大小不得超过{echo:IUpload::getMaxSize()}</label>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td id="divFileProgressContainer"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td id="thumbnails"></td>
+
+						<!--图片模板-->
+						<script type='text/html' id='picTemplate'>
+						<span class='pic'>
+							<img onclick="defaultImage(this);" style="margin:5px; opacity:1;width:100px;height:100px" src="{webroot:<%=picRoot%>}" alt="<%=picRoot%>" /><br />
+							<a class='orange' href='javascript:void(0)' onclick="$(this).parent().remove();">删除</a>
+						</span>
+						</script>
+					</tr>
+				</table>
+			</div>
+			<table id="table_box_2" cellpadding="0" cellspacing="0" style="display:none">
+				<table class="form_table">
+					<col width="150px" />
+					<col />
+					<tr>
+						<th>产品描述：</th>
+						<td><textarea id="content" name="content" style="width:700px;height:400px;"></textarea></td>
+					</tr>
+				</table>
+			</table>
+			<table class="form_table">
+				<col width="150px" />
+				<col />
+				<tr>
+					<td></td>
+					<td><button class="submit" type="submit" id="submit_area" onclick="return checkForm()"><span>发布商品</span></button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+
+<script language="javascript">
+//创建表单实例
+var formObj = new Form('goodsForm');
+//DOM加载完毕
+$(function(){
+	//初始化地域联动
+	template.compile("areaTemplate",areaTemplate);
+
+	{if:isset($this->memberRow['area']) && $this->memberRow['area']}
+	{set:$area = explode(',',trim($this->memberRow['area'],','))}
+	createAreaSelect('province',0,{$area[0]});
+	createAreaSelect('city',{$area[0]},{$area[1]});
+	createAreaSelect('area',{$area[1]},{$area[2]});
+	{else:}
+	createAreaSelect('province',0,"");
+	{/if}
+});
+
+/**
+ * 生成地域js联动下拉框
+ * @param name
+ * @param parent_id
+ * @param select_id
+ */
+function createAreaSelect(name,parent_id,select_id)
+{
+	//生成地区
+	$.getJSON("{url:/block/area_child}",{"aid":parent_id,"random":Math.random()},function(json)
+	{
+		$('[name="'+name+'"]').html(template.render('areaTemplate',{"select_id":select_id,"data":json}));
+	});
+}
+/**
+*cireclet无法取到值
+*赋值给circlet然后上传
+*/
+$("#submit_area").click(function(){
+	$("#circlet_area").val($("#area :selected").val());
+	/*传送性别*/
+	$("#selectdropsex").val($("#selectdropsextext").text());
+  });
+
+
+
+
+//默认货号
+var defaultProductNo = '{echo:goods_class::createGoodsNo()}';
+
+$(function()
+{
+	initProductTable();
+
+	//存在商品信息
+	{if:isset($form)}
+	var goods = {echo:JSON::encode($form)};
+
+	var goodsRowHtml = template.render('goodsRowTemplate',{'templateData':[goods]});
+	$('#goodsBaseBody').html(goodsRowHtml);
+
+	formObj.init(goods);
+
+	//模型选择
+	$('[name="model_id"]').change();
+	{else:}
+	$('[name="_goods_no[0]"]').val(defaultProductNo);
+	{/if}
+
+	//存在货品信息,进行数据填充
+	{if:isset($product)}
+	var spec_array = {echo:$product[0]['spec_array']};
+	var product    = {echo:JSON::encode($product)};
+
+	var goodsHeadHtml = template.render('goodsHeadTemplate',{'templateData':spec_array});
+	$('#goodsBaseHead').html(goodsHeadHtml);
+
+	var goodsRowHtml = template.render('goodsRowTemplate',{'templateData':product});
+	$('#goodsBaseBody').html(goodsRowHtml);
+	{/if}
+
+	//商品分类回填
+	{if:isset($goods_category)}
+	formObj.setValue('_goods_category[]',"{echo:join(';',$goods_category)}");
+	{/if}
+
+	//商品图片的回填
+	{if:isset($goods_photo)}
+	var goodsPhoto = {echo:JSON::encode($goods_photo)};
+	for(var item in goodsPhoto)
+	{
+		var picHtml = template.render('picTemplate',{'picRoot':goodsPhoto[item].img});
+		$('#thumbnails').append(picHtml);
+	}
+	{/if}
+
+	//商品默认图片
+	{if:isset($form['img']) && $form['img']}
+	$('#thumbnails img[alt="{echo:$form['img']}"]').addClass('current');
+	{/if}
+
+	//编辑器载入
+	KindEditor.ready(function(K){
+		K.create('#content');
+	});
+});
+
+//初始化货品表格
+function initProductTable()
+{
+	//默认产生一条商品标题空挡
+	var goodsHeadHtml = template.render('goodsHeadTemplate',{'templateData':[]});
+	$('#goodsBaseHead').html(goodsHeadHtml);
+
+	//默认产生一条商品空挡
+	var goodsRowHtml = template.render('goodsRowTemplate',{'templateData':[[]]});
+	$('#goodsBaseBody').html(goodsRowHtml);
+}
+
+//删除货品
+function delProduct(_self)
+{
+	$(_self).parent().parent().remove();
+	if($('#goodsBaseBody tr').length == 0)
+	{
+		initProductTable();
+	}
+}
+
+//提交表单前的检查
+function checkForm()
+{
+	//整理商品图片
+	var goodsPhoto = [];
+	$('#thumbnails img').each(function(){
+		goodsPhoto.push(this.alt);
+	});
+	if(goodsPhoto.length > 0)
+	{
+		$('input[name="_imgList"]').val(goodsPhoto.join(','));
+		$('input[name="img"]').val($('#thumbnails img[class="current"]').attr('alt'));
+	}
+	return true;
+}
+
+//tab标签切换
+function select_tab(curr_tab)
+{
+	$("form[name='goodsForm'] > div").hide();
+	$("#table_box_"+curr_tab).show();
+	$("ul[name=menu1] > li").removeClass('selected');
+	$('#li_'+curr_tab).addClass('selected');
+}
+
+//根据模型动态生成扩展属性
+function create_attr(model_id)
+{
+	$.getJSON("{url:/goods/attribute_init}",{'model_id':model_id}, function(json)
+	{
+		if(json && json.length > 0)
+		{
+			var templateHtml = template.render('propertiesTemplate',{'templateData':json});
+			$('#propert_table').html(templateHtml);
+			$('#properties').show();
+
+			//表单回填设置项
+			{if:isset($goods_attr)}
+			{set:$attrArray = array();}
+			{foreach:items = $goods_attr}
+			{set:$valArray = explode(',',$item);}
+			{set:$attrArray[] = '"attr_id_'.$key.'[]":"'.join(";",$valArray).'"'}
+			{set:$attrArray[] = '"attr_id_'.$key.'":"'.join(";",$valArray).'"'}
+			{/foreach}
+			formObj.init({{echo:join(',',$attrArray)}});
+			{/if}
+		}
+		else
+		{
+			$('#properties').hide();
+		}
+	});
+}
+
+/**
+ * 图片上传回调,handers.js回调
+ * @param picJson => {'flag','img','list','show'}
+ */
+function uploadPicCallback(picJson)
+{
+	var picHtml = template.render('picTemplate',{'picRoot':picJson.img});
+	$('#thumbnails').append(picHtml);
+
+	//默认设置第一个为默认图片
+	if($('#thumbnails img[class="current"]').length == 0)
+	{
+		$('#thumbnails img:first').addClass('current');
+	}
+}
+
+/**
+ * 设置商品默认图片
+ */
+function defaultImage(_self)
+{
+	$('#thumbnails img').removeClass('current');
+	$(_self).addClass('current');
+}
+</script>
